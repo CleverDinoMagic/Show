@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Created by Marc on 12/6/16.
  */
-@PluginInfo(name = "Show", version = "1.5.4", depend = {"Audio", "Core"}, softdepend = "WorldEdit", canReload = true)
+@PluginInfo(name = "Show", version = "1.5.4", depend = {"Core"}, softdepend = "WorldEdit", canReload = true)
 public class ShowPlugin extends Plugin {
     @Getter private ArmorStandManager armorStandManager;
     @Getter private FountainManager fountainManager;
@@ -41,6 +41,7 @@ public class ShowPlugin extends Plugin {
     @Override
     protected void onPluginEnable() throws Exception {
         instance = this;
+        getLogger().warning("Private Audio integration is unavailable; legacy audio cues will be skipped. Visual show actions remain enabled.");
         armorStandManager = new ArmorStandManager();
         fountainManager = new FountainManager();
         showGenerator = new ShowGenerator();
