@@ -3,16 +3,12 @@ package network.palace.show;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import lombok.Getter;
 import lombok.Setter;
-import network.palace.audio.Audio;
-import network.palace.audio.handlers.AudioArea;
 import network.palace.core.Core;
 import network.palace.core.player.CPlayer;
 import network.palace.core.player.Rank;
 import network.palace.core.utils.HeadUtil;
 import network.palace.show.actions.*;
 import network.palace.show.actions.armor.*;
-import network.palace.show.actions.audio.AudioStart;
-import network.palace.show.actions.audio.AudioSync;
 import network.palace.show.exceptions.ShowParseException;
 import network.palace.show.handlers.ArmorData;
 import network.palace.show.handlers.armorstand.PositionType;
@@ -357,14 +353,10 @@ public class Show {
             // Particle
             ParticleAction ac = new ParticleAction(this, time);
             action = ac.load(strLine, args);
-        } else if (args[1].contains("AudioStart")) {
-            // AudioStart
-            AudioStart ac = new AudioStart(this, time);
-            action = ac.load(strLine, args);
-        } else if (args[1].contains("AudioSync")) {
-            // AudioSync
-            AudioSync ac = new AudioSync(this, time);
-            action = ac.load(strLine, args);
+        } else if (args[1].contains("AudioStart") || args[1].contains("AudioSync")) {
+            // The private audio backend is not distributed. Skip only this cue,
+            // keeping the remaining visual show actions and their timestamps.
+            return null;
         } else if (args[1].contains("Sequence")) {
             // Sequences
             ShowSequence sequence;
@@ -572,14 +564,7 @@ public class Show {
     }
 
     public void syncAudioForPlayer(final CPlayer tp) {
-        final AudioArea area = Audio.getInstance().getByName(areaName);
-        if (area == null) {
-            return;
-        }
-        area.triggerPlayer(tp);
-        long ms = (System.currentTimeMillis() - musicTime);
-        float seconds = ms / 1000f;
-        area.sync(seconds, tp, 0);
+        tp.sendMessage(ChatColor.YELLOW + "Show audio is unavailable on this server.");
     }
 
     public void stop() {
